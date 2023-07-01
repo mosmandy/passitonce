@@ -27,7 +27,7 @@ app.get('/allusers/:s_email', async(req, res) =>{
 })
 app.post("/registeruser",async(req, res)=>{
     try {
-        bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.genSalt(process.env.SALTROUNDS, function(err, salt) {
             bcrypt.hash(req.body.password, salt, async function(err, hash) {
                 // Store hash in your password DB.
                 req.body.password = await hash;
@@ -59,10 +59,9 @@ app.post("/userlogin",async(req, res)=>{
 });
 // update userpassword
 app.put('/updatepassword/:s_email', async(req, res) => {
-    console.log(req.body);
     try {
         const {s_email} = req.params;
-        bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.genSalt(process.env.SALTROUNDS, function(err, salt) {
             bcrypt.hash(req.body.password, salt, async function(err, hash) {
                 req.body.password = await hash;
                 const user = await User.findOneAndUpdate({email: s_email}, req.body);
